@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "relevamiento-de-municipios",
+  "compatibility_date": "2026-08-05",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": ".",
+    "include": [
+      "index.html"
+    ],
+    "exclude": [
+      ".git/**",
+      "presentaciones/**"
+    ]
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
