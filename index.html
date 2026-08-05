@@ -19,6 +19,7 @@ html,body{height:100%}
 body{
   font-family:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   background:var(--fondo); color:var(--blanco); overflow:hidden;
+  display:flex; flex-direction:column;      /* el alto se reparte solo */
 }
 /* ---------- decoracion ---------- */
 .bg-circles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
@@ -29,6 +30,7 @@ body{
 
 /* ---------- header ---------- */
 header{
+  flex:none;
   position:relative;z-index:3;display:flex;align-items:flex-start;gap:18px;
   padding:14px 24px;background:linear-gradient(90deg,var(--fondo2) 0%,#2E1A42 100%);
   border-bottom:1px solid rgba(155,111,217,.28);
@@ -52,7 +54,7 @@ h1 small{display:block;font-size:10.5px;font-weight:500;color:var(--gris);letter
 .hstat span{font-size:9.5px;color:var(--gris);letter-spacing:1.1px;text-transform:uppercase}
 
 /* ---------- layout ---------- */
-.wrap{position:relative;z-index:2;display:flex;height:calc(100% - 67px)}
+.wrap{position:relative;z-index:2;display:flex;flex:1;min-height:0}
 .mapzone{flex:1;position:relative;min-width:0}
 svg#mapa{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
 svg#mapa.dragging{cursor:grabbing}
@@ -266,41 +268,55 @@ select:focus{outline:none;border-color:var(--violeta-cl)}
 }
 @media(max-width:900px){
   body{overscroll-behavior:none}
-  header{padding:9px 13px;gap:10px}
-  .brand-mark{width:31px;height:31px;font-size:11px;border-radius:8px}
-  h1{font-size:11.5px;letter-spacing:.2px}
-  h1 small{font-size:8px;letter-spacing:.9px}
+
+  /* --- encabezado compacto --- */
+  header{padding:7px 11px;gap:8px}
+  .brand-mark{width:26px;height:26px;font-size:9.5px;border-radius:7px;box-shadow:0 0 0 2px rgba(116,59,188,.25)}
+  h1{font-size:10.5px;letter-spacing:.1px;line-height:1.2}
+  h1 small{font-size:7.5px;letter-spacing:.7px;margin-top:1px}
   .header-stats{display:none}
-  .pedido{font-size:8.5px;line-height:1.45;margin-top:4px;padding-top:4px}
+  .pedido{font-size:8px;line-height:1.4;margin-top:3px;padding-top:3px}
 
-  /* el mapa termina donde empieza la hoja: nada queda tapado */
-  .wrap{display:block;height:calc(100% - 74px)}
-  .mapzone{position:absolute;left:0;right:0;top:74px;bottom:108px;height:auto}
+  /* --- el mapa ocupa todo lo que queda, menos la pestaña de la hoja --- */
+  .wrap{display:block;padding-bottom:102px}
+  .mapzone{position:relative;width:100%;height:100%}
 
+  /* --- una sola fila arriba: buscador + modo --- */
   .modebar{display:none}
-  .mapsearch{left:10px;right:10px;top:10px;width:auto}
-  .mapsearch input{padding:12px 13px;font-size:16px}   /* 16px evita el zoom de iOS */
-  .modesel{display:flex;top:64px}
+  .mapsearch{left:8px;right:122px;top:8px;width:auto}
+  .mapsearch input{padding:9px 12px;font-size:16px;border-radius:10px}  /* 16px evita el zoom de iOS */
+  .modesel{display:block;left:auto;right:8px;top:8px;width:114px;
+    padding:0;border:0;background:none;backdrop-filter:none}
+  .modesel label{display:none}
+  .modesel select{width:100%;padding:10px 8px;font-size:11.5px;border-radius:10px;
+    background:rgba(27,15,39,.92);border:1px solid rgba(155,111,217,.42)}
 
-  .mapctl{left:auto;right:10px;top:120px;gap:7px}
-  .mapctl button{width:40px;height:40px;font-size:19px}
-  .mapctl .wide{width:auto;height:34px;font-size:10px}
+  /* --- zoom: sólo lo indispensable, abajo a la derecha (el pinch hace el resto) --- */
+  .mapctl{left:auto;right:8px;bottom:8px;top:auto;flex-direction:row;gap:6px}
+  .mapctl #zin,.mapctl #zout{display:none}
+  .mapctl button{width:36px;height:36px;font-size:15px}
+  .mapctl .wide{width:auto;height:36px;font-size:9.5px;padding:0 10px}
 
-  .legend{left:10px;right:auto;bottom:10px;max-width:205px;padding:9px 11px}
+  /* --- referencias: pastilla chica --- */
+  .legend{left:8px;bottom:8px;right:auto;max-width:200px;padding:8px 10px}
+  .legend.collapsed{padding:7px 11px}
+  .legend.collapsed .legHead{white-space:nowrap;font-size:9px;margin-bottom:0}
   .chev{display:block}
   .legend .nota{font-size:8.5px}
 
+  /* --- hoja inferior --- */
   aside{
-    position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;height:80vh;z-index:20;
+    position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;height:82vh;z-index:20;
     border-left:0;border-top:1px solid rgba(155,111,217,.4);border-radius:20px 20px 0 0;
     background:rgba(23,13,33,.98);box-shadow:0 -12px 44px rgba(0,0,0,.6);
-    transform:translateY(calc(80vh - 108px));
+    transform:translateY(calc(82vh - 102px));
     transition:transform .3s cubic-bezier(.32,.72,0,1);
     padding-bottom:env(safe-area-inset-bottom);
   }
   aside.open{transform:translateY(0)}
-  .grab{display:flex}
-  .tabs button{padding:12px 0;font-size:10px}
+  .grab{display:flex;padding:8px 0 6px}
+  .grab em{font-size:8.5px}
+  .tabs button{padding:11px 0;font-size:9.5px;letter-spacing:.7px}
   .pane{padding:15px 15px 30px}
   .kpis{gap:8px}
   .kpi .v{font-size:21px}
@@ -308,15 +324,17 @@ select:focus{outline:none;border-color:var(--violeta-cl)}
   .btn-pdf{padding:17px;font-size:13px}
   .item{padding:12px 10px}
   .item .nm{font-size:13.5px}
-  .search{padding:13px;font-size:16px}   /* 16px evita el zoom automático de iOS */
+  .search{padding:13px;font-size:16px}
   .chip{padding:7px 11px}
+  .hint{bottom:118px}
   #tip{display:none !important}
 }
 @media(max-width:900px) and (orientation:landscape){
-  aside{height:88vh;transform:translateY(calc(88vh - 96px))}
-  .mapzone{bottom:96px}
+  aside{height:92vh;transform:translateY(calc(92vh - 92px))}
+  .wrap{padding-bottom:92px}
   .legend{display:none}
-  .hint{bottom:112px}
+  .hint{bottom:104px}
+  .pedido{display:none}
 }
 </style>
 </head>
@@ -325,12 +343,13 @@ select:focus{outline:none;border-color:var(--violeta-cl)}
 
 <header>
   <div class="brand">
-    <div class="brand-mark">  </div>
+    <div class="brand-mark">LLA</div>
     <div class="titulo">
       <h1>Mapa Económico-Financiero Municipal
         <small>Provincia de Buenos Aires · Ejercicio 2025</small></h1>
       <div class="pedido">Informe a pedido de Patricia Vásquez – consultas:
-        <a href="mailto:tadeoquintela1@gmail.com">tadeoquintela1@gmail.com</a></div>
+        <a href="mailto:tadeoquintela1@gmail.com">tadeoquintela1@gmail.com</a> o
+        <a href="tel:+5491164126903">+54 9 11 6412 6903</a></div>
     </div>
   </div>
   <div class="header-stats">
@@ -349,13 +368,13 @@ select:focus{outline:none;border-color:var(--violeta-cl)}
     </div>
     <div class="modesel">
       <label for="modoM">Colorear por</label>
-      <select id="modoM">
-        <option value="pdf">Informe disponible</option>
-        <option value="transp">Transparencia (ASAP)</option>
-        <option value="ejec">% Ejecución presupuestaria</option>
-        <option value="fiscal">Resultado fiscal</option>
-        <option value="financ">Resultado financiero</option>
-        <option value="seccion">Sección electoral</option>
+      <select id="modoM" aria-label="Colorear el mapa por">
+        <option value="pdf">Informe</option>
+        <option value="transp">Transparencia</option>
+        <option value="ejec">% Ejecución</option>
+        <option value="fiscal">R. fiscal</option>
+        <option value="financ">R. financiero</option>
+        <option value="seccion">Sección</option>
       </select>
     </div>
     <div class="modebar" id="modebar">
@@ -483,6 +502,9 @@ const SVGNS='http://www.w3.org/2000/svg';
 const svg=document.getElementById('mapa');
 const PAD=0.12;
 const vb={x:BB[0]-PAD,y:BB[1]-PAD,w:(BB[2]-BB[0])+PAD*2,h:(BB[3]-BB[1])+PAD*2};
+// en celular el encuadre se ajusta por el alto: dejamos aire arriba y abajo
+// para que la barra de búsqueda y las pastillas no se apoyen sobre la provincia
+if(esMovilRaw()){ const extra=vb.h*0.13; vb.y-=extra/2; vb.h+=extra; }
 svg.setAttribute('viewBox',`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
 svg.setAttribute('preserveAspectRatio','xMidYMid meet');
 
@@ -515,7 +537,8 @@ let tituloLeyenda='Referencias';
 function refrescarCabeceraLeyenda(){
   const l=document.querySelector('.legend'), t=document.getElementById('legTitle');
   if(!l||!t) return;
-  t.textContent = l.classList.contains('collapsed') ? 'Ver referencias de color' : tituloLeyenda;
+  t.textContent = !l.classList.contains('collapsed') ? tituloLeyenda
+                : (esMovilRaw() ? 'Colores' : 'Ver referencias de color');
 }
 
 const MODOS={
@@ -875,7 +898,10 @@ const legend=document.querySelector('.legend');
 document.getElementById('legHead').onclick=()=>{legend.classList.toggle('collapsed');refrescarCabeceraLeyenda()};
 if(esMovil()) legend.classList.add('collapsed');
 refrescarCabeceraLeyenda();
-window.addEventListener('resize',()=>{ if(!esMovil()) sheet.classList.remove('open'); });
+window.addEventListener('resize',()=>{
+  if(!esMovil()) sheet.classList.remove('open');
+  refrescarCabeceraLeyenda();
+});
 
 /* ---------- aviso inicial (sólo móvil, una vez) ---------- */
 const hint=document.getElementById('hint');
